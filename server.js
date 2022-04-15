@@ -19,10 +19,48 @@ app.get('/app/', (req, res) => {
   res.end(res.statusCode + " " + res.statusMessage);
 });
 
+app.get('/app/flip/', (req, res) => {
+  result = coinFlip()
+
+  dict = {"flip": result}
+  // dictJSON = JSON.stringify(dict)
+
+  res.json(dict)
+})
+
 app.get('/app/flips/:number', (req, res) => {
-	const flips = manyflips(req.params.number)
-    
+	const flips = coinFlips(req.params.number)
+
+  results = countFlips(flips)
+
+  dict = {"raw": flips, "summary": results}
+
+  res.json(dict)
 });
+
+app.get('/app/flip/call/heads', (req, res) => {
+  result = coinFlip()
+
+  victory = "lose"
+
+  if(result == "heads"){
+    victory = "win"
+  }
+
+  res.json({"call": "heads", "flip": result, "result": victory})
+})
+
+app.get('/app/flip/call/tails', (req, res) => {
+  result = coinFlip()
+
+  victory = "lose"
+
+  if(result == "tails"){
+    victory = "win"
+  }
+
+  res.json({"call": "tails", "flip": result, "result": victory})
+})
 
 // Default response for any other request
 app.use(function (req, res) {
